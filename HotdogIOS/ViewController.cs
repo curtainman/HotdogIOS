@@ -20,7 +20,7 @@ namespace HotdogIOS
         {
         }
 
-        private float confidence;
+        private string confidence = "suck it jian yang";
 
         public override void ViewDidLoad ()
         {
@@ -87,21 +87,12 @@ namespace HotdogIOS
 
             //ML
 
+
+            
             var assetPath = NSBundle.MainBundle.GetUrlForResource("model", "mlmodel");
-            var assetActual = MLModel.CompileModel(assetPath, out NSError err);
-            var model = MLModel.Create(assetActual, out NSError compErr);
-            var vModel = VNCoreMLModel.FromMLModel(model, out NSError vnErr);
-
-            var ClassificationRequest = new VNCoreMLRequest(vModel, (response, e) => { });
-            var handler = new VNImageRequestHandler(this.ToCVPixelBuffer(this.image.Image), new VNImageOptions());
-            DispatchQueue.DefaultGlobalQueue.DispatchAsync(() =>
-            {
-                handler.Perform(new VNRequest[] { ClassificationRequest }, out NSError errs);
-            });
-            var observations = ClassificationRequest.GetResults<VNClassificationObservation>();
-
-            var best = observations[0]; // first/best classification result
-            switch (best.Identifier)
+            var model = HotdogIOS.model.Create(assetPath, out NSError err);
+            var best = model.GetPrediction(new modelInput(this.ToCVPixelBuffer(this.image.Image)), out NSError pp);
+            switch (best.ClassLabel.ToString())
             {
                 case "hotdog":
                     this.stat.Text = "✅ Hotdog";
@@ -117,7 +108,8 @@ namespace HotdogIOS
                     break;
             }
 
-            this.confidence = best.Confidence;
+          //  this.confidence = best.Loss.ToString();
+            
         }
 
 
