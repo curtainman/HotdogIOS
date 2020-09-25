@@ -1,6 +1,7 @@
 ﻿using Acr.UserDialogs;
 using CoreFoundation;
 using CoreGraphics;
+using CoreImage;
 using CoreML;
 using CoreVideo;
 using Foundation;
@@ -8,6 +9,7 @@ using Plugin.Media;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using UIKit;
 using Vision;
 
@@ -20,7 +22,7 @@ namespace HotdogIOS
         {
         }
 
-        private string confidence = "suck it jian yang";
+        private float confidence = 0.0f;
 
         public override void ViewDidLoad ()
         {
@@ -46,7 +48,7 @@ namespace HotdogIOS
         {
             await CrossMedia.Current.Initialize();
             if (!CrossMedia.Current.IsCameraAvailable ||
-                  !CrossMedia.Current.IsTakePhotoSupported)
+                  !CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsPickPhotoSupported)
             {
                 UserDialogs.Instance.Alert("No camera found.", null, "OK");
                 return;
@@ -77,6 +79,9 @@ namespace HotdogIOS
             takePhotoButton.Hidden = true;
             image.Hidden = false;
             spinnyboy.Hidden = false;
+            this.hotdogLbl.Hidden = true;
+            this.ramenLbl.Hidden = true;
+            this.ramenOrHotdog.Hidden = true;
             spinnyboy.StartAnimating();
             returnToMenu.Hidden = false;
             this.stat.Text = "Analyzing...";
@@ -84,32 +89,42 @@ namespace HotdogIOS
             showDebugInfo.Hidden = false;
             var data = NSData.FromArray(result);
             image.Image = UIImage.LoadFromData(data);
-
+            await Task.Delay(10000);
             //ML
-
-
-            
             var assetPath = NSBundle.MainBundle.GetUrlForResource("model", "mlmodel");
-            var model = HotdogIOS.model.Create(assetPath, out NSError err);
-            var best = model.GetPrediction(new modelInput(this.ToCVPixelBuffer(this.image.Image)), out NSError pp);
-            switch (best.ClassLabel.ToString())
+            var transform = MLModel.CompileModel(assetPath, out NSError compErr);
+            MLModel model = MLModel.Create(transform, out NSError fucl);
+            var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);
+            var ciImage = new CIImage(image.Image);
+            var classificationRequest = new VNCoreMLRequest(vnModel);
+
+            //just do it
+            var handler = new VNImageRequestHandler(ciImage, ImageIO.CGImagePropertyOrientation.Up, new VNImageOptions());
+            handler.Perform(new[] { classificationRequest }, out NSError perfError);
+            var results = classificationRequest.GetResults<VNClassificationObservation>();
+            var thing = results[0];
+            Console.WriteLine("OUT " + thing.Identifier);
+            switch (thing.Identifier)
             {
                 case "hotdog":
                     this.stat.Text = "✅ Hotdog";
                     this.stat.TextColor = UIKit.UIColor.Green;
+                    this.stat.TextAlignment = UITextAlignment.Center;
                     spinnyboy.Hidden = true;
                     spinnyboy.StopAnimating();
                     break;
                 case "nothotdog":
                     this.stat.Text = "❌ Not Hotdog";
                     this.stat.TextColor = UIKit.UIColor.Red;
+                    this.stat.TextAlignment = UITextAlignment.Center;
                     spinnyboy.Hidden = true;
                     spinnyboy.StopAnimating();
                     break;
             }
 
-          //  this.confidence = best.Loss.ToString();
-            
+
+            this.confidence = thing.Confidence;
+
         }
 
 
@@ -147,6 +162,9 @@ namespace HotdogIOS
             spinnyboy.Hidden = true;
             spinnyboy.StopAnimating();
             returnToMenu.Hidden = true;
+            this.hotdogLbl.Hidden = false;
+            this.ramenLbl.Hidden = false;
+            this.ramenOrHotdog.Hidden = false;
             showDebugInfo.Hidden = true;
 
             this.stat.Text = "Analyzing...";

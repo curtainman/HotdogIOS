@@ -16,7 +16,19 @@ namespace HotdogIOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel hotdogLbl { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIImageView image { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel ramenLbl { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UISwitch ramenOrHotdog { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -60,9 +72,24 @@ namespace HotdogIOS
 
         void ReleaseDesignerOutlets ()
         {
+            if (hotdogLbl != null) {
+                hotdogLbl.Dispose ();
+                hotdogLbl = null;
+            }
+
             if (image != null) {
                 image.Dispose ();
                 image = null;
+            }
+
+            if (ramenLbl != null) {
+                ramenLbl.Dispose ();
+                ramenLbl = null;
+            }
+
+            if (ramenOrHotdog != null) {
+                ramenOrHotdog.Dispose ();
+                ramenOrHotdog = null;
             }
 
             if (returnToMenu != null) {
