@@ -62,7 +62,7 @@ namespace HotdogIOS {
 	}
 
 	/// <summary>
-	/// Model Prediction Output Type
+	/// Model Prediction Output Type, crated by me
 	/// </summary>
 	public class modelOutput : NSObject, IMLFeatureProvider
 	{
