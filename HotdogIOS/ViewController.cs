@@ -47,7 +47,11 @@ namespace HotdogIOS
 
         private async void PickCamera()
         {
-            await CrossMedia.Current.Initialize();
+            if(CrossMedia.Current == null)
+            {
+                await CrossMedia.Current.Initialize();
+            }
+            
 
             if (!CrossMedia.Current.IsCameraAvailable ||
                  !CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsPickPhotoSupported)
@@ -61,6 +65,12 @@ namespace HotdogIOS
             var file = await CrossMedia.Current.PickPhotoAsync();
             {
             };
+
+            if (file == null)
+            {
+                UserDialogs.Instance.Alert("You didn't pick a photo.", null, "OK");
+                return;
+            }
 
             Stream s = file.GetStream();
             byte[] result = null;
@@ -202,7 +212,11 @@ namespace HotdogIOS
 
         private async void DoCamera()
         {
-            await CrossMedia.Current.Initialize();
+            if (CrossMedia.Current == null)
+            {
+                await CrossMedia.Current.Initialize();
+            }
+
             if (!CrossMedia.Current.IsCameraAvailable ||
                   !CrossMedia.Current.IsTakePhotoSupported || !CrossMedia.Current.IsPickPhotoSupported)
             {
@@ -214,6 +228,12 @@ namespace HotdogIOS
             {
                 
             });
+
+            if(file == null)
+            {
+                UserDialogs.Instance.Alert("You didn't take a photo.", null, "OK");
+                return;
+            }
 
             Stream s = file.GetStream();
             byte[] result = null;
