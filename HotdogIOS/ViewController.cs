@@ -13,6 +13,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UIKit;
 using Vision;
+using Xamarin.Essentials;
 
 namespace HotdogIOS
 {
@@ -154,6 +155,7 @@ namespace HotdogIOS
                         break;
                 }
                 this.confidence = thing.Confidence;
+                Vibration.Vibrate(500);
             }
             else
             {
@@ -205,6 +207,7 @@ namespace HotdogIOS
                         break;
                 }
                 this.confidence = thing.Confidence;
+                Vibration.Vibrate(500);
             }
 
         }
