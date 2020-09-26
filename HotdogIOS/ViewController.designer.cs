@@ -58,6 +58,10 @@ namespace HotdogIOS
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton takePhotoButton { get; set; }
 
+        [Action ("ImageTypeSwitched:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void ImageTypeSwitched (UIKit.UISwitch sender);
+
         [Action ("ReturnToMenu_TouchUpInside:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void ReturnToMenu_TouchUpInside (UIKit.UIButton sender);

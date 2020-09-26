@@ -166,6 +166,12 @@
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Resources\RamenMODEL.cs">
+      <DependentUpon>RamenMODEL.mlmodel</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <CoreMLModel Include="Resources\RamenMODEL.mlmodel" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ProjectExtensions>

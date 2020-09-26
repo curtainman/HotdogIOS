@@ -23,6 +23,7 @@ namespace HotdogIOS
         }
 
         private float confidence = 0.0f;
+        public static string Type = "Hotdog";
 
         public override void ViewDidLoad ()
         {
@@ -89,41 +90,106 @@ namespace HotdogIOS
             showDebugInfo.Hidden = false;
             var data = NSData.FromArray(result);
             image.Image = UIImage.LoadFromData(data);
-            await Task.Delay(10000);
+            await Task.Delay(1000);
             //ML
-            var assetPath = NSBundle.MainBundle.GetUrlForResource("model", "mlmodel");
-            var transform = MLModel.CompileModel(assetPath, out NSError compErr);
-            MLModel model = MLModel.Create(transform, out NSError fucl);
-            var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);
-            var ciImage = new CIImage(image.Image);
-            var classificationRequest = new VNCoreMLRequest(vnModel);
 
-            //just do it
-            var handler = new VNImageRequestHandler(ciImage, ImageIO.CGImagePropertyOrientation.Up, new VNImageOptions());
-            handler.Perform(new[] { classificationRequest }, out NSError perfError);
-            var results = classificationRequest.GetResults<VNClassificationObservation>();
-            var thing = results[0];
-            Console.WriteLine("OUT " + thing.Identifier);
-            switch (thing.Identifier)
+            Console.WriteLine("Selected: " + ViewController.Type.ToString());
+
+            //First we check what type of thing we have here
+            if(ViewController.Type.Equals("Hotdog"))
             {
-                case "hotdog":
-                    this.stat.Text = "✅ Hotdog";
-                    this.stat.TextColor = UIKit.UIColor.Green;
-                    this.stat.TextAlignment = UITextAlignment.Center;
-                    spinnyboy.Hidden = true;
-                    spinnyboy.StopAnimating();
-                    break;
-                case "nothotdog":
-                    this.stat.Text = "❌ Not Hotdog";
-                    this.stat.TextColor = UIKit.UIColor.Red;
-                    this.stat.TextAlignment = UITextAlignment.Center;
-                    spinnyboy.Hidden = true;
-                    spinnyboy.StopAnimating();
-                    break;
+                var assetPath = NSBundle.MainBundle.GetUrlForResource("model", "mlmodel");
+                var transform = MLModel.CompileModel(assetPath, out NSError compErr);
+                MLModel model = MLModel.Create(transform, out NSError fucl);
+                var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);
+                var ciImage = new CIImage(image.Image);
+                var classificationRequest = new VNCoreMLRequest(vnModel);
+
+                //just do it
+                var handler = new VNImageRequestHandler(ciImage, ImageIO.CGImagePropertyOrientation.Up, new VNImageOptions());
+                handler.Perform(new[] { classificationRequest }, out NSError perfError);
+                var results = classificationRequest.GetResults<VNClassificationObservation>();
+                var thing = results[0];
+                Console.WriteLine("Hotdog OUT " + thing.Identifier);
+                switch (thing.Identifier)
+                {
+                    case "hotdog":
+                        if(thing.Confidence > 0.85f)
+                        {
+                            this.stat.Text = "✅ Hotdog";
+                            this.stat.TextColor = UIKit.UIColor.Green;
+                            this.stat.TextAlignment = UITextAlignment.Center;
+                            spinnyboy.Hidden = true;
+                            spinnyboy.StopAnimating();
+                        }
+                        else
+                        {
+                            this.stat.Text = "❌ Not Hotdog";
+                            this.stat.TextColor = UIKit.UIColor.Red;
+                            this.stat.TextAlignment = UITextAlignment.Center;
+                            spinnyboy.Hidden = true;
+                            spinnyboy.StopAnimating();
+                        }
+
+                        break;
+                        
+                    case "nothotdog":
+                        this.stat.Text = "❌ Not Hotdog";
+                        this.stat.TextColor = UIKit.UIColor.Red;
+                        this.stat.TextAlignment = UITextAlignment.Center;
+                        spinnyboy.Hidden = true;
+                        spinnyboy.StopAnimating();
+                        break;
+                }
+                this.confidence = thing.Confidence;
             }
+            else
+            {
+                var assetPath = NSBundle.MainBundle.GetUrlForResource("RamenMODEL", "mlmodel");
+                var transform = MLModel.CompileModel(assetPath, out NSError compErr);
+                MLModel model = MLModel.Create(transform, out NSError fucl);
+                var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);
+                var ciImage = new CIImage(image.Image);
+                var classificationRequest = new VNCoreMLRequest(vnModel);
 
+                //just do it
+                var handler = new VNImageRequestHandler(ciImage, ImageIO.CGImagePropertyOrientation.Up, new VNImageOptions());
+                handler.Perform(new[] { classificationRequest }, out NSError perfError);
+                var results = classificationRequest.GetResults<VNClassificationObservation>();
+                var thing = results[0];
+                Console.WriteLine("Ramen OUT " + thing.Identifier);
+                switch (thing.Identifier)
+                {
+                    case "ramen":
+                        if (thing.Confidence > 0.85f)
+                        {
+                            this.stat.Text = "✅ Ramen";
+                            this.stat.TextColor = UIKit.UIColor.Green;
+                            this.stat.TextAlignment = UITextAlignment.Center;
+                            spinnyboy.Hidden = true;
+                            spinnyboy.StopAnimating();
+                        }
+                        else
+                        {
+                            this.stat.Text = "❌ Not Ramen";
+                            this.stat.TextColor = UIKit.UIColor.Red;
+                            this.stat.TextAlignment = UITextAlignment.Center;
+                            spinnyboy.Hidden = true;
+                            spinnyboy.StopAnimating();
+                        }
 
-            this.confidence = thing.Confidence;
+                        break;
+
+                    case "notramen":
+                        this.stat.Text = "❌ Not Ramen";
+                        this.stat.TextColor = UIKit.UIColor.Red;
+                        this.stat.TextAlignment = UITextAlignment.Center;
+                        spinnyboy.Hidden = true;
+                        spinnyboy.StopAnimating();
+                        break;
+                }
+                this.confidence = thing.Confidence;
+            }
 
         }
 
@@ -175,6 +241,23 @@ namespace HotdogIOS
         partial void ShowDebugInfo_TouchUpInside(UIButton sender)
         {
             UserDialogs.Instance.Alert("Confidence: " + confidence, "Debug", "Continue");
+        }
+
+        partial void ImageTypeSwitched(UISwitch sender)
+        {
+            Console.WriteLine("Checker type switched.");
+            if(this.ramenOrHotdog.On)
+            {
+                ViewController.Type = "Hotdog";
+                Console.WriteLine("Switched to hotdog");
+            }
+            else
+            {
+                ViewController.Type = "Ramen";
+                Console.WriteLine("Switched to ramen");
+            }
+
+
         }
     }
 }
