@@ -145,8 +145,8 @@ namespace HotdogIOS
             }
             else
             {
-                var assetPath = NSBundle.MainBundle.GetUrlForResource("RamenMODEL", "mlmodel");
-                var transform = MLModel.CompileModel(assetPath, out NSError compErr);
+                NSUrl modelPath = NSBundle.MainBundle.GetUrlForResource("RamenMODEL", "mlmodel");
+                var transform = MLModel.CompileModel(modelPath, out NSError compErr);
                 MLModel model = MLModel.Create(transform, out NSError fucl);
                 var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);
                 var ciImage = new CIImage(image.Image);
