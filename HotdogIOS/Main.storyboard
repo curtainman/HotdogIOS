@@ -38,6 +38,9 @@
                                 <rect key="frame" x="46" y="295" width="229" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Select From Camera Roll"/>
+                                <connections>
+                                    <action selector="SelCamRollEvent:" destination="BYZ-38-t0r" id="11547" eventType="touchUpInside"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3568" translatesAutoresizingMaskIntoConstraints="NO" fixedFrame="YES" text="Analyzing..." hidden="YES">
                                 <rect key="frame" x="8" y="22" width="303" height="53"/>

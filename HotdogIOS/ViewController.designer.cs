@@ -66,6 +66,10 @@ namespace HotdogIOS
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void ReturnToMenu_TouchUpInside (UIKit.UIButton sender);
 
+        [Action ("SelCamRollEvent:")]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        partial void SelCamRollEvent (UIKit.UIButton sender);
+
         [Action ("ShowDebugInfo_TouchUpInside:")]
         [GeneratedCode ("iOS Designer", "1.0")]
         partial void ShowDebugInfo_TouchUpInside (UIKit.UIButton sender);
