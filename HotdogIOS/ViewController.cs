@@ -145,7 +145,11 @@ namespace HotdogIOS
             }
             else
             {
-                NSUrl modelPath = NSBundle.MainBundle.GetUrlForResource("RamenMODEL", "mlmodel");
+                NSUrl modelPath = NSBundle.MainBundle.GetUrlForResource("Ramen", "mlmodel");
+                if(modelPath == null)
+                {
+                    Console.WriteLine("peeepee");
+                }
                 var transform = MLModel.CompileModel(modelPath, out NSError compErr);
                 MLModel model = MLModel.Create(transform, out NSError fucl);
                 var vnModel = VNCoreMLModel.FromMLModel(model, out NSError rror);

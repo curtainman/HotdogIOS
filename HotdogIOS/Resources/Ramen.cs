@@ -1,4 +1,4 @@
-// RamenMODEL.cs
+// Ramen.cs
 //
 // This file was automatically generated and should not be edited.
 //
@@ -16,7 +16,7 @@ namespace HotdogIOS {
 	/// <summary>
 	/// Model Prediction Input Type
 	/// </summary>
-	public class RamenMODELInput : NSObject, IMLFeatureProvider
+	public class RamenInput : NSObject, IMLFeatureProvider
 	{
 		static readonly NSSet<NSString> featureNames = new NSSet<NSString> (
 			new NSString ("data")
@@ -52,7 +52,7 @@ namespace HotdogIOS {
 			}
 		}
 
-		public RamenMODELInput (CVPixelBuffer data)
+		public RamenInput (CVPixelBuffer data)
 		{
 			if (data == null)
 				throw new ArgumentNullException (nameof (data));
@@ -64,7 +64,7 @@ namespace HotdogIOS {
 	/// <summary>
 	/// Model Prediction Output Type
 	/// </summary>
-	public class RamenMODELOutput : NSObject, IMLFeatureProvider
+	public class RamenOutput : NSObject, IMLFeatureProvider
 	{
 		static readonly NSSet<NSString> featureNames = new NSSet<NSString> (
 			new NSString ("loss"), new NSString ("classLabel")
@@ -123,7 +123,7 @@ namespace HotdogIOS {
 			}
 		}
 
-		public RamenMODELOutput (NSDictionary<NSObject, NSNumber> loss, string classLabel)
+		public RamenOutput (NSDictionary<NSObject, NSNumber> loss, string classLabel)
 		{
 			if (loss == null)
 				throw new ArgumentNullException (nameof (loss));
@@ -139,28 +139,28 @@ namespace HotdogIOS {
 	/// <summary>
 	/// Class for model loading and prediction
 	/// </summary>
-	public class RamenMODEL : NSObject
+	public class Ramen : NSObject
 	{
 		readonly MLModel model;
 
 		static NSUrl GetModelUrl ()
 		{
-			return NSBundle.MainBundle.GetUrlForResource ("RamenMODEL", "mlmodelc");
+			return NSBundle.MainBundle.GetUrlForResource ("Ramen", "mlmodelc");
 		}
 
-		public RamenMODEL ()
+		public Ramen ()
 		{
 			NSError err;
 
 			model = MLModel.Create (GetModelUrl (), out err);
 		}
 
-		RamenMODEL (MLModel model)
+		Ramen (MLModel model)
 		{
 			this.model = model;
 		}
 
-		public static RamenMODEL Create (NSUrl url, out NSError error)
+		public static Ramen Create (NSUrl url, out NSError error)
 		{
 			if (url == null)
 				throw new ArgumentNullException (nameof (url));
@@ -170,10 +170,10 @@ namespace HotdogIOS {
 			if (model == null)
 				return null;
 
-			return new RamenMODEL (model);
+			return new Ramen (model);
 		}
 
-		public static RamenMODEL Create (MLModelConfiguration configuration, out NSError error)
+		public static Ramen Create (MLModelConfiguration configuration, out NSError error)
 		{
 			if (configuration == null)
 				throw new ArgumentNullException (nameof (configuration));
@@ -183,10 +183,10 @@ namespace HotdogIOS {
 			if (model == null)
 				return null;
 
-			return new RamenMODEL (model);
+			return new Ramen (model);
 		}
 
-		public static RamenMODEL Create (NSUrl url, MLModelConfiguration configuration, out NSError error)
+		public static Ramen Create (NSUrl url, MLModelConfiguration configuration, out NSError error)
 		{
 			if (url == null)
 				throw new ArgumentNullException (nameof (url));
@@ -199,15 +199,15 @@ namespace HotdogIOS {
 			if (model == null)
 				return null;
 
-			return new RamenMODEL (model);
+			return new Ramen (model);
 		}
 
 		/// <summary>
 		/// Make a prediction using the standard interface
 		/// </summary>
-		/// <param name="input">an instance of RamenMODELInput to predict from</param>
+		/// <param name="input">an instance of RamenInput to predict from</param>
 		/// <param name="error">If an error occurs, upon return contains an NSError object that describes the problem.</param>
-		public RamenMODELOutput GetPrediction (RamenMODELInput input, out NSError error)
+		public RamenOutput GetPrediction (RamenInput input, out NSError error)
 		{
 			if (input == null)
 				throw new ArgumentNullException (nameof (input));
@@ -220,16 +220,16 @@ namespace HotdogIOS {
 			var lossValue = prediction.GetFeatureValue ("loss").DictionaryValue;
 			var classLabelValue = prediction.GetFeatureValue ("classLabel").StringValue;
 
-			return new RamenMODELOutput (lossValue, classLabelValue);
+			return new RamenOutput (lossValue, classLabelValue);
 		}
 
 		/// <summary>
 		/// Make a prediction using the standard interface
 		/// </summary>
-		/// <param name="input">an instance of RamenMODELInput to predict from</param>
+		/// <param name="input">an instance of RamenInput to predict from</param>
 		/// <param name="options">prediction options</param>
 		/// <param name="error">If an error occurs, upon return contains an NSError object that describes the problem.</param>
-		public RamenMODELOutput GetPrediction (RamenMODELInput input, MLPredictionOptions options, out NSError error)
+		public RamenOutput GetPrediction (RamenInput input, MLPredictionOptions options, out NSError error)
 		{
 			if (input == null)
 				throw new ArgumentNullException (nameof (input));
@@ -245,7 +245,7 @@ namespace HotdogIOS {
 			var lossValue = prediction.GetFeatureValue ("loss").DictionaryValue;
 			var classLabelValue = prediction.GetFeatureValue ("classLabel").StringValue;
 
-			return new RamenMODELOutput (lossValue, classLabelValue);
+			return new RamenOutput (lossValue, classLabelValue);
 		}
 
 		/// <summary>
@@ -253,9 +253,9 @@ namespace HotdogIOS {
 		/// </summary>
 		/// <param name="data"> as color (kCVPixelFormatType_32BGRA) image buffer, 224 pizels wide by 224 pixels high</param>
 		/// <param name="error">If an error occurs, upon return contains an NSError object that describes the problem.</param>
-		public RamenMODELOutput GetPrediction (CVPixelBuffer data, out NSError error)
+		public RamenOutput GetPrediction (CVPixelBuffer data, out NSError error)
 		{
-			var input = new RamenMODELInput (data);
+			var input = new RamenInput (data);
 
 			return GetPrediction (input, out error);
 		}
@@ -266,9 +266,9 @@ namespace HotdogIOS {
 		/// <param name="data"> as color (kCVPixelFormatType_32BGRA) image buffer, 224 pizels wide by 224 pixels high</param>
 		/// <param name="options">prediction options</param>
 		/// <param name="error">If an error occurs, upon return contains an NSError object that describes the problem.</param>
-		public RamenMODELOutput GetPrediction (CVPixelBuffer data, MLPredictionOptions options, out NSError error)
+		public RamenOutput GetPrediction (CVPixelBuffer data, MLPredictionOptions options, out NSError error)
 		{
-			var input = new RamenMODELInput (data);
+			var input = new RamenInput (data);
 
 			return GetPrediction (input, options, out error);
 		}
