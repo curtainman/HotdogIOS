@@ -320,6 +320,17 @@ namespace HotdogIOS
                         break;
                 }
                 this.confidence = thing.Confidence;
+                // cache the instance
+                var haptic = new UINotificationFeedbackGenerator();
+
+                // Do this in advance so it is ready to be called on-demand without delay...
+                haptic.Prepare();
+
+                // produce the feedback as many times as needed
+                haptic.NotificationOccurred(UINotificationFeedbackType.Success);
+
+                // when done all done, clean up
+                haptic.Dispose();
             }
             else
             {
@@ -371,6 +382,16 @@ namespace HotdogIOS
                         break;
                 }
                 this.confidence = thing.Confidence;
+                var haptic = new UINotificationFeedbackGenerator();
+
+                // Do this in advance so it is ready to be called on-demand without delay...
+                haptic.Prepare();
+
+                // produce the feedback as many times as needed
+                haptic.NotificationOccurred(UINotificationFeedbackType.Success);
+
+                // when done all done, clean up
+                haptic.Dispose();
             }
 
         }
